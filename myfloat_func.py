@@ -256,6 +256,21 @@ def division_n(a1,b1,signo,cifras):
     if(len(c) < len(d)):
         c = c + (len(d)-len(c))*[0]
     
+    str_1 = ''.join([str(i) for i in c])
+    str_2 = ''.join([str(i) for i in d])
+    dividendo = int(str_1)
+    divisor = int(str_2)
+    str_3 = ''.join([str(j) for j in a[0]])
+    str_4 = ''.join([str(j) for j in b[0]])
+    dividendo_e = int(str_3)
+    divisor_e = int(str_4)
+    longitud_e = str(dividendo_e//divisor_e)
+    i = 0
+    while(i < len(longitud_e) + cifras):
+        dividendo_1 = dividendo//divisor
+        if(dividendo_1 = 0):
+            dividendo_1
+        i = i+1
     
 
 """Este algoritmo decide si la suma corresponde a una suma o a una resta"""
@@ -305,7 +320,7 @@ def multiplicacion(a,b):
 
 
 """Este define si es una división que da positivo o negativo"""
-def division(a,b,cifras):
+def division(a,b,cifras = 30):
     if(a[0][0]==b[0][0]):
         return division_n(a,b,['+'],cifras)
     elif(a[0][0]!=b[0][0]):
@@ -320,17 +335,17 @@ def comparacion(a, b):
     while(i<2):
         if(len(a[i]) != len(b[i])):
             print("Las tuplas ",a,", ",b," no representan el mismo número.")
-            return 0
+            return False
         else:
             j=0
             while(j<len(a[i])):
                 if(a[i][j] != b[i][j]):
                     print("Las tuplas ",a,", ",b," no representan el mismo número.")
-                    return 0
+                    return False
                 j = j+1
         i = i+1
     print("Las tuplas ",a,", ",b," representan el mismo número.")
-    return 1
+    return True
 
 """ Esta función transforma un flotante en una tupla """
 def float_to_tuple(f):
@@ -376,7 +391,7 @@ def int_to_tuple(i):
 
 
 def pi():
-    pass
+    
 
 
 if __name__ == "__main__":

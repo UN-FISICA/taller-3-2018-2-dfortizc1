@@ -63,28 +63,66 @@ class MyFloat:
     def __radd__(self,other):
         return self.__add__(other)
 
-    def __rsub__(self):
+    def __rsub__(self,other):
         return self.__sub__(other)
 
-    def __rmul__(self):
+    def __rmul__(self,other):
         return self.__mul__(other)
 
-    def __rdiv__(self):
+    def __rdiv__(self,other):
         return self.__div__(other)
 
     def __str__(self):
         return fc.imprimir(self.tpl)
 
     def __repr__(self):
-        pass
+        return fc.imprimir(self.tpl)
 
-    def __eq__(self):
-        pass
+    def __eq__(self,other):
+        if isinstance(other,MyFloat):
+            if(fc.comparacion(self.tpl,other.tpl) == True):
+                return True
+            elif(fc.comparacion(self.tpl,other.tpl) == False):
+                return False
+        elif isinstance(other,int):
+            tuple_int = fc.int_to_tuple(other)            
+            if(fc.comparacion(self.tpl,tuple_int) == True):
+                return True
+            elif(fc.comparacion(self.tpl,tuple_int) == False):
+                return False
+        elif isinstance(other,float):
+            tuple_other = fc.float_to_tuple(other)
+            if(fc.comparacion(self.tpl,tuple_other) == True):
+                return True
+            elif(fc.comparacion(self.tpl,tuple_other) == False):
+                return False
+        else:
+            return NotImplemented
 
     def __ne__(self):
-        pass
+        if isinstance(other,MyFloat):
+            if(fc.comparacion(self.tpl,other.tpl) == True):
+                return False
+            elif(fc.comparacion(self.tpl,other.tpl) == False):
+                return True
+        elif isinstance(other,int):
+            tuple_int = fc.int_to_tuple(other)            
+            if(fc.comparacion(self.tpl,tuple_int) == True):
+                return False
+            elif(fc.comparacion(self.tpl,tuple_int) == False):
+                return True
+        elif isinstance(other,float):
+            tuple_other = fc.float_to_tuple(other)
+            if(fc.comparacion(self.tpl,tuple_other) == True):
+                return False
+            elif(fc.comparacion(self.tpl,tuple_other) == False):
+                return True
+        else:
+            return NotImplemented
+
 
 if __name__ == "__main__":
     # Escribir aca el codigo para calcular pi. Al finalizar el calculo solo
     # debe imprimir el valor de pi, sin otros textos ni nada
-    pass
+    import myfloat_func as fc
+    print(fc.imprimir(fc.pi()))
