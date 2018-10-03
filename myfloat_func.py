@@ -391,7 +391,8 @@ def int_to_tuple(i):
 
 
 def pi():
-    
+    suma =([0], 30*[0])
+    while()
 
 
 if __name__ == "__main__":
