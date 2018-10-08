@@ -70,7 +70,17 @@ class MyFloat:
         return self.__mul__(other)
 
     def __rdiv__(self,other):
-        return self.__div__(other)
+        """ Define la division de una tupla con otra tupla, int o float """
+        if isinstance(other,MyFloat):
+            return fc.division(other.tpl,self.tpl,30)
+        elif isinstance(other,int):
+            tuple_int = fc.int_to_tuple(other)            
+            return fc.division(tuple_int,self.tpl,30)
+        elif isinstance(other,float):
+            tuple_other = fc.float_to_tuple(other)
+            return fc.division(tuple_other,self.tpl,30)
+        else:
+            return NotImplemented 
 
     def __str__(self):
         return fc.imprimir(self.tpl)
@@ -127,10 +137,10 @@ if __name__ == "__main__":
     import myfloat_func as fc
     pi = MyFloat((['+',0],[0]))
     k = 0
-    while(k<20000):
+    while(k<1000000):
         if(k%2 == 0):
-            pi = MyFloat(MyFloat(pi.tpl) + (4/((2*k)+1)) )
+            pi = MyFloat(MyFloat(pi.tpl) + 4/((2*k)+1) )
         else:
-            pi = MyFloat(MyFloat(pi.tpl) - (4/((2*k)+1)) )
+            pi = MyFloat(MyFloat(pi.tpl) - 4/((2*k)+1) )
         k += 1
     print(pi)

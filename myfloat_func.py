@@ -255,17 +255,14 @@ def multiplicacion_n(a1,b1,signo):
     if (len(producto_a[0]) == len(producto_a[len(producto_a)-1])):
         while(k<len(producto_a)):
             producto_a[k] = (len(producto_a)-1-k)*[0] + producto_a[k] + k*[0]
-            #print(producto_a[k],"\t",k)
             k = k+1
     else:
         while(k<len(producto_a)):
             if(k == (len(producto_a)-1)):
                 producto_a[k] = (len(producto_a)-(k+1))*[0] + producto_a[k] + k*[0]
-                #print(producto_a[k],"\t",k)
                 k = k+1
             else:
                 producto_a[k] = (len(producto_a)-k)*[0] + producto_a[k] + k*[0]
-                #print(producto_a[k],"\t",k)
                 k = k+1
 
     """Aquí se van sumando todas las listas anteriores elemento a elemento"""
@@ -278,11 +275,9 @@ def multiplicacion_n(a1,b1,signo):
         while(m<len(producto_a)):
             sumad = sumad + producto_a[m][l]
             m = m+1
-        #print(sumad,"hey")
         producto_t.insert(0,sumad%10)
         extra = sumad//10
         l = l-1
-    #print(producto_t,"hey")
 
     """Aquí se separa el producto final en parte decimal y en parte entera"""
     parte_d=len(a[1])+len(b[1])-1
@@ -318,7 +313,6 @@ def multiplicacion_p(a,b):
     
     if(auxiliar != 0):
         producto_a.insert(0,auxiliar)
-    #print(producto_a, "hola")
     return producto_a
 
 """Este algoritmo divide a las dos listas en el orden asignado"""
@@ -347,24 +341,13 @@ def division_n(a1,b1,signo,cifras):
         dividendo1 = copy.copy(residuo) + [c[i+len(d)-1]]
         dividendo = tuple_to_int(dividendo1)
         divisor = tuple_to_int(d)
-        #print("0 ", dividendo1)
-        #print("1 ",dividendo)
-        #print("2 ",divisor)
-        division.append(int(dividendo//divisor))
-        #print("3 ",dividendo//divisor)
-        #print("division = ", division)
-        digito = int_to_tuple(int(dividendo//divisor))
-        #print("4 ",digito)
+        division.append(dividendo//divisor)
+        digito = int_to_tuple(dividendo//divisor)
         divisor1 = (['+']+d,[0])
-        #print("5 ",divisor1)
         dividendo2 = (['+']+dividendo1,[0])
-        #print("6 ",dividendo2)
         divisor2 = multiplicacion(digito,divisor1)
-        #print("7 ",divisor2)
         residuo_t = resta(dividendo2,divisor2)
-        #print("8 ",residuo_t)
         residuo = tuple_to_int_list(residuo_t)
-        #print("9 ",residuo)
         i += 1
 
     division_tuple = list_to_tuple(division,cifras_e,signo)
@@ -382,17 +365,14 @@ def comparacion(a, b):
     i=0
     while(i<2):
         if(len(a[i]) != len(b[i])):
-            #print("Las tuplas ",a,", ",b," no representan el mismo número.")
             return False
         else:
             j=0
             while(j<len(a[i])):
                 if(a[i][j] != b[i][j]):
-                    #print("Las tuplas ",a,", ",b," no representan el mismo número.")
                     return False
                 j = j+1
         i = i+1
-    #print("Las tuplas ",a,", ",b," representan el mismo número.")
     return True
 
 """ Esta función transforma un flotante en una tupla """
@@ -408,13 +388,9 @@ def float_to_tuple(f):
 
     [numero,base,potencia] = str_f.partition("e")
     [entero,punto,decimal] = numero.partition(".")
-    #print(" = ",entero)
-    #print(" = ",decimal)
     if(numero == str_f):
         part_d = [int(j) for j in decimal]
         part_e = [int(i) for i in entero]
-        #print("== ",part_d)
-        #print("== ",part_e)
     else:
         if(int(potencia)>0):
             extra = (int(potencia)+1)*[0]
@@ -423,12 +399,12 @@ def float_to_tuple(f):
             part_e = [int(i) for i in entero] + [int(j) for j in decimal1[::int(potencia)]]
             part_d = [int(k) for k in decimal1[abs(int(potencia))::]]
         else:
-            extra = abs(int(potencia)+1)*[0]
+            extra = (abs(int(potencia))+1)*[0]
             entero_d = ''.join([str(i) for i in extra])
             entero1 = entero_d + entero
             part_d = [int(k) for k in entero1[len(entero1)-1-abs(int(potencia))::]] + [int(i) for i in decimal]
-            part_e = [int(j) for j in entero1[::len(entero1)-1-abs(int(potencia))]]
-
+            part_e = [int(j) for j in entero1[::abs(int(potencia))]]
+    
     while(part_e[0] == 0):
         if(len(part_e) <=1):
             break
@@ -438,7 +414,7 @@ def float_to_tuple(f):
         if(len(part_d) <=1):
             break
         part_d.pop(len(part_d)-1)
-
+    
     return (signo + part_e, part_d)
     
 
@@ -478,7 +454,6 @@ def pi():
     pi_i = (['+',0],[0])
     k = 0
     while(comparacion(pi_0,pi_i) == False and k<20000):
-    #while(k<20000):
         pi_0 = copy.deepcopy(pi_i)
         if((k%2)==0):
             pi_ki = int_to_tuple((2*k)+1)
@@ -494,19 +469,4 @@ def pi():
 
 if __name__ == "__main__":
     print(imprimir(pi()))
-    """
-    a = (['+',1,2,3],[4,5,6])
-    b = (['-',0,0,0],[0])
-    c = (['+',1,0,0],[0,0])
-    d = multiplicacion(a,b)
-    e = multiplicacion(b,a)
-    f = division(c,a)
-    g = division(a,c)
-    print(imprimir(a))
-    print(imprimir(b))
-    print(imprimir(c))
-    print(imprimir(d))
-    print(imprimir(e))
-    print(imprimir(f))
-    print(imprimir(g))
-    """
+    
