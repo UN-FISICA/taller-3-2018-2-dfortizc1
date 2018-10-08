@@ -406,17 +406,38 @@ def float_to_tuple(f):
         str_f = str_provicional
         signo  = ['+']
 
-    part_e = []
-    i = 0
-    while(str_f[i] != '.'):
-        part_e.append(int(str_f[i]))
-        i = i+1
-    
-    i = len(part_e)+1
-    part_d = []
-    while(i < len(str_f)):
-        part_d.append(int(str_f[i]))
-        i = i+1
+    [numero,base,potencia] = str_f.partition("e")
+    [entero,punto,decimal] = numero.partition(".")
+    #print(" = ",entero)
+    #print(" = ",decimal)
+    if(numero == str_f):
+        part_d = [int(j) for j in decimal]
+        part_e = [int(i) for i in entero]
+        #print("== ",part_d)
+        #print("== ",part_e)
+    else:
+        if(int(potencia)>0):
+            extra = (int(potencia)+1)*[0]
+            decimal_e = ''.join([str(i) for i in extra])
+            decimal1 = decimal + decimal_e
+            part_e = [int(i) for i in entero] + [int(j) for j in decimal1[::int(potencia)]]
+            part_d = [int(k) for k in decimal1[abs(int(potencia))::]]
+        else:
+            extra = abs(int(potencia)+1)*[0]
+            entero_d = ''.join([str(i) for i in extra])
+            entero1 = entero_d + entero
+            part_d = [int(k) for k in entero1[len(entero1)-1-abs(int(potencia))::]] + [int(i) for i in decimal]
+            part_e = [int(j) for j in entero1[::len(entero1)-1-abs(int(potencia))]]
+
+    while(part_e[0] == 0):
+        if(len(part_e) <=1):
+            break
+        part_e.pop(0)
+
+    while(part_d[len(part_d)-1] == 0):
+        if(len(part_d) <=1):
+            break
+        part_d.pop(len(part_d)-1)
 
     return (signo + part_e, part_d)
     

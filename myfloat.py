@@ -15,7 +15,9 @@ class MyFloat:
             tuple_int = fc.int_to_tuple(other)            
             return fc.suma(self.tpl,tuple_int)
         elif isinstance(other,float):
+            #print(other)
             tuple_other = fc.float_to_tuple(other)
+            #print("1 = ",tuple_other)
             return fc.suma(self.tpl,tuple_other)
         else:
             return NotImplemented
@@ -39,7 +41,7 @@ class MyFloat:
         if isinstance(other,MyFloat):
             return fc.multiplicacion(self.tpl,other.tpl)
         elif isinstance(other,int):
-            tuple_int = fc.int_to_tuple(other)            
+            tuple_int = fc.int_to_tuple(other)
             return fc.multiplicacion(self.tpl,tuple_int)
         elif isinstance(other,float):
             tuple_other = fc.float_to_tuple(other)
@@ -125,4 +127,12 @@ if __name__ == "__main__":
     # Escribir aca el codigo para calcular pi. Al finalizar el calculo solo
     # debe imprimir el valor de pi, sin otros textos ni nada
     import myfloat_func as fc
-    print(fc.imprimir(fc.pi()))
+    pi = MyFloat((['+',0],[0]))
+    k = 0
+    while(k<20000):
+        if(k%2 == 0):
+            pi = MyFloat(MyFloat(pi.tpl) + (4/((2*k)+1)) )
+        else:
+            pi = MyFloat(MyFloat(pi.tpl) - (4/((2*k)+1)) )
+        k += 1
+    print(pi)
