@@ -27,18 +27,65 @@ def igualar(a1,b1):
 """Esta función imprime la tupla de forma entendible"""
 def imprimir(a1):
     a = copy.deepcopy(a1)
-    b = []
-    i = 0
-    while (i < len(a)):
-        j=0
-        while (j < len(a[i])):
-            if(i==1 and j==0):
-                b.append('.')
-            b.append(str(a[i][j]))
-            j = j+1
-        i = i+1
-    c = ''.join(b)
-    return c
+    str_e = ''.join([str(i) for i in a[0]])
+    str_d = ''.join([str(i) for i in a[1]])
+    return str_e + '.' + str_d
+
+
+"""Este algoritmo decide si la suma corresponde a una suma o a una resta"""
+def suma(a, b):
+    if(a[0][0]=='+'):
+        if(b[0][0]=='+'):
+            return suma_n(a,b)
+        elif(b[0][0]=='-'):
+            return resta_n(a,b)
+    elif(a[0][0]=='-'):
+        if(b[0][0]=='+'):
+            return resta_n(a,b)
+        elif(b[0][0]=='-'):
+            return suma_n(a,b)
+    else:
+        print('Error.Lo sentimos, su número no está signado, por favor signéelo.')
+
+
+"""Este algoritmo decide si la suma corresponde a una suma o a una resta"""
+def resta(a, b):
+    if(a[0][0]=='+'):
+        if(b[0][0]=='+'):
+            b[0][0] = '-'
+            return resta_n(a,b)
+        elif(b[0][0]=='-'):
+            b[0][0] = '+'
+            return suma_n(a,b)
+    elif(a[0][0]=='-'):
+        if(b[0][0]=='+'):
+            b[0][0] = '-'
+            return suma_n(a,b)
+        elif(b[0][0]=='-'):
+            b[0][0] = '+'
+            return resta_n(a,b)
+    else:
+        print('Error.Lo sentimos, su número no está signado, por favor signéelo.')
+
+
+"""Este define si es una multipliación que da positivo o negativo"""
+def multiplicacion(a,b):
+    if(a[0][0]==b[0][0]):
+        return multiplicacion_n(a,b,['+'])
+    elif(a[0][0]!=b[0][0]):
+        return multiplicacion_n(a,b,['-'])
+    else:
+        print('Error.Lo sentimos, su número no está signado, por favor signéelo.')
+
+
+"""Este define si es una división que da positivo o negativo"""
+def division(a,b,cifras = 100):
+    if(a[0][0]==b[0][0]):
+        return division_n(a,b,['+'],cifras)
+    elif(a[0][0]!=b[0][0]):
+        return division_n(a,b,['-'],cifras)
+    else:
+        print('Error.Lo sentimos, su número no está signado, por favor signéelo.')
 
 """Esta función retorna al mayor o menor número sin tener en cuenta el signo"""
 def may_men(a1,b1):
@@ -89,10 +136,10 @@ def suma_n(a1,b1):
     b[0].pop(0)
     (e0,extra) = suma_p(a[0],b[0],extra)
     if(extra != 0):
-        e = signo + [extra] + e0
+        return(signo + [extra] + e0,d)
     else:
-        e = signo + e0
-    return (e,d)
+        return(signo + e0,d)
+
     
 """ Aquí hace una suma de las componentes de las tuplas"""
 def suma_p(a,b,auxiliar):
@@ -114,6 +161,15 @@ def suma_p(a,b,auxiliar):
 def resta_n(a1,b1):
     a = copy.deepcopy(a1)
     b = copy.deepcopy(b1)
+    while(a[0][1] == 0):
+        if(len(a[0]) <= 2):
+            break
+        a[0].pop(1)
+
+    while(b[0][1] == 0):
+        if(len(b[0]) <= 2):
+            break
+        b[0].pop(1)
 
     """Aquí define qué número es mayor al otro"""
     if (len(a[0])<len(b[0])):
@@ -130,15 +186,22 @@ def resta_n(a1,b1):
 
     [mayor,menor] = igualar(mayor,menor)
     extra = 0
-    (d,extra) = resta_p(mayor[1],menor[1],0)
+    (d,extra,restar_e) = resta_p(mayor[1],menor[1],0)
     mayor[0].pop(0)
     menor[0].pop(0)
-    (e0,extra) = resta_p(mayor[0],menor[0],extra)
+    mayor[0][len(mayor[0])-1] -= restar_e
+    (e0,extra,restar_e) = resta_p(mayor[0],menor[0],extra)
+    
+    while(e0[0] == 0):
+        if(len(e0) <= 1):
+            break
+        e0.pop(0)
+
     if(extra != 0):
-        e = signo + [extra] + e0
+        return (signo + [extra] + e0,d)
     else:
-        e = signo + e0
-    return (e,d)
+        return (signo + e0,d)
+
 
 """Aquí hace la resta de cada una de las componentes de las tuplas"""
 def resta_p(a,b,auxiliar):
@@ -152,6 +215,7 @@ def resta_p(a,b,auxiliar):
             else:
                 resta.insert(0,a[i]-b[i]+auxiliar)
                 auxiliar = 0
+            restar_e = 0
         else:
             a[i] = a[i] + 10
             a[i-1] = a[i-1] - 1
@@ -161,9 +225,11 @@ def resta_p(a,b,auxiliar):
             else:
                 resta.insert(0,a[i]-b[i]+auxiliar)
                 auxiliar = 0
+            restar_e = 1
         i = i-1
+    
+    return (resta,auxiliar,restar_e)
 
-    return (resta,auxiliar)
 
 """Hace la multiplicación de dos tuplas"""
 def multiplicacion_n(a1,b1,signo):
@@ -186,10 +252,21 @@ def multiplicacion_n(a1,b1,signo):
     """Aquí iguala los tamaños de todos los productos anteriores, de tal forma 
     que se pueda aplicar el algoritmo de multipliación del colegio"""
     k=0
-    while(k<len(producto_a)):
-        producto_a[k] = (len(producto_a)-1-k)*[0] + producto_a[k] + k*[0]
-        #print(producto_a[k],"\t",k)
-        k = k+1
+    if (len(producto_a[0]) == len(producto_a[len(producto_a)-1])):
+        while(k<len(producto_a)):
+            producto_a[k] = (len(producto_a)-1-k)*[0] + producto_a[k] + k*[0]
+            #print(producto_a[k],"\t",k)
+            k = k+1
+    else:
+        while(k<len(producto_a)):
+            if(k == (len(producto_a)-1)):
+                producto_a[k] = (len(producto_a)-(k+1))*[0] + producto_a[k] + k*[0]
+                #print(producto_a[k],"\t",k)
+                k = k+1
+            else:
+                producto_a[k] = (len(producto_a)-k)*[0] + producto_a[k] + k*[0]
+                #print(producto_a[k],"\t",k)
+                k = k+1
 
     """Aquí se van sumando todas las listas anteriores elemento a elemento"""
     l=len(producto_a[0])-1
@@ -238,9 +315,9 @@ def multiplicacion_p(a,b):
             auxiliar = ((b[i][j]*a)+auxiliar)//10
             j = j-1
         i = i-1
-
-    producto_a.insert(0,auxiliar)
     
+    if(auxiliar != 0):
+        producto_a.insert(0,auxiliar)
     #print(producto_a, "hola")
     return producto_a
 
@@ -252,81 +329,52 @@ def division_n(a1,b1,signo,cifras):
     b[0].pop(0)
     c = a[0][:] + a[1][:]
     d = b[0][:] + b[1][:]
-
-    if(len(c) < len(d)):
+    i = 0
+    division = []
+    
+    if(len(a[0])<=len(b[0])):
+        cifras_e = 1
+        division = (len(b[0])-len(a[0]))*[0]
+    else:
+        cifras_e = len(a[0])-len(b[0]) + 1
+    
+    if(len(c)<len(d)):
         c = c + (len(d)-len(c))*[0]
     
-    str_1 = ''.join([str(i) for i in c])
-    str_2 = ''.join([str(i) for i in d])
-    dividendo = int(str_1)
-    divisor = int(str_2)
-    str_3 = ''.join([str(j) for j in a[0]])
-    str_4 = ''.join([str(j) for j in b[0]])
-    dividendo_e = int(str_3)
-    divisor_e = int(str_4)
-    longitud_e = str(dividendo_e//divisor_e)
-    i = 0
-    while(i < len(longitud_e) + cifras):
-        dividendo_1 = dividendo//divisor
-        if(dividendo_1 = 0):
-            dividendo_1
-        i = i+1
+    residuo = copy.copy(c[0:len(d)-1])
+    while(i < cifras):
+        c.append(0)
+        dividendo1 = copy.copy(residuo) + [c[i+len(d)-1]]
+        dividendo = tuple_to_int(dividendo1)
+        divisor = tuple_to_int(d)
+        #print("0 ", dividendo1)
+        #print("1 ",dividendo)
+        #print("2 ",divisor)
+        division.append(int(dividendo//divisor))
+        #print("3 ",dividendo//divisor)
+        #print("division = ", division)
+        digito = int_to_tuple(int(dividendo//divisor))
+        #print("4 ",digito)
+        divisor1 = (['+']+d,[0])
+        #print("5 ",divisor1)
+        dividendo2 = (['+']+dividendo1,[0])
+        #print("6 ",dividendo2)
+        divisor2 = multiplicacion(digito,divisor1)
+        #print("7 ",divisor2)
+        residuo_t = resta(dividendo2,divisor2)
+        #print("8 ",residuo_t)
+        residuo = tuple_to_int_list(residuo_t)
+        #print("9 ",residuo)
+        i += 1
+
+    division_tuple = list_to_tuple(division,cifras_e,signo)
     
+    while(division_tuple[0][1] == 0):
+        if(len(division_tuple[0])<=2):
+            break
+        division_tuple[0].pop(1)
 
-"""Este algoritmo decide si la suma corresponde a una suma o a una resta"""
-def suma(a, b):
-    if(a[0][0]=='+'):
-        if(b[0][0]=='+'):
-            return suma_n(a,b)
-        elif(b[0][0]=='-'):
-            return resta_n(a,b)
-    elif(a[0][0]=='-'):
-        if(b[0][0]=='+'):
-            return resta_n(a,b)
-        elif(b[0][0]=='-'):
-            return suma_n(a,b)
-    else:
-        print('Error.Lo sentimos, su número no está signado, por favor signéelo.')
-
-
-"""Este algoritmo decide si la suma corresponde a una suma o a una resta"""
-def resta(a, b):
-    if(a[0][0]=='+'):
-        if(b[0][0]=='+'):
-            b[0][0] = '-'
-            return resta_n(a,b)
-        elif(b[0][0]=='-'):
-            b[0][0] = '+'
-            return suma_n(a,b)
-    elif(a[0][0]=='-'):
-        if(b[0][0]=='+'):
-            b[0][0] = '-'
-            return suma_n(a,b)
-        elif(b[0][0]=='-'):
-            b[0][0] = '+'
-            return resta_n(a,b)
-    else:
-        print('Error.Lo sentimos, su número no está signado, por favor signéelo.')
-
-
-"""Este define si es una multipliación que da positivo o negativo"""
-def multiplicacion(a,b):
-    if(a[0][0]==b[0][0]):
-        return multiplicacion_n(a,b,['+'])
-    elif(a[0][0]!=b[0][0]):
-        return multiplicacion_n(a,b,['-'])
-    else:
-        print('Error.Lo sentimos, su número no está signado, por favor signéelo.')
-
-
-"""Este define si es una división que da positivo o negativo"""
-def division(a,b,cifras = 30):
-    if(a[0][0]==b[0][0]):
-        return division_n(a,b,['+'],cifras)
-    elif(a[0][0]!=b[0][0]):
-        return division_n(a,b,['-'],cifras)
-    else:
-        print('Error.Lo sentimos, su número no está signado, por favor signéelo.')
+    return division_tuple
 
 
 """Este algoritmo decide si las tuplas son iguales o no"""
@@ -334,28 +382,30 @@ def comparacion(a, b):
     i=0
     while(i<2):
         if(len(a[i]) != len(b[i])):
-            print("Las tuplas ",a,", ",b," no representan el mismo número.")
+            #print("Las tuplas ",a,", ",b," no representan el mismo número.")
             return False
         else:
             j=0
             while(j<len(a[i])):
                 if(a[i][j] != b[i][j]):
-                    print("Las tuplas ",a,", ",b," no representan el mismo número.")
+                    #print("Las tuplas ",a,", ",b," no representan el mismo número.")
                     return False
                 j = j+1
         i = i+1
-    print("Las tuplas ",a,", ",b," representan el mismo número.")
+    #print("Las tuplas ",a,", ",b," representan el mismo número.")
     return True
 
 """ Esta función transforma un flotante en una tupla """
 def float_to_tuple(f):
-    if(f >=0):
-        signo = ['+']
-    else:
-        signo  = ['-']
-
-    str_f = str(f)
+    str_provicional = str(f)
     
+    if(str_provicional[0] == '-'):
+        str_f = str_provicional.replace("-","")
+        signo = ['-']
+    else:
+        str_f = str_provicional
+        signo  = ['+']
+
     part_e = []
     i = 0
     while(str_f[i] != '.'):
@@ -373,27 +423,69 @@ def float_to_tuple(f):
 
 """ Esta función transforma un entero en tupla """
 def int_to_tuple(i):
-    if(i >=0):
-        signo = ['+']
-    else:
-        signo  = ['-']
-
     str_i = str(i)
+    if(str_i[0] == '-'):
+        signo = ['-']
+        str_i = str_i.replace("-","")
+    else:
+        signo = ['+']
     
-    entero = []
-    k = 0
-    while(k < len(str_i)):
-        entero.append(int(str_i[k]))
-        k = k+1
+    entero = [int(i) for i in str_i]
+    return (signo + entero, [0])
 
-    return (signo + entero, 30*[0])
 
+def tuple_to_int(a1):
+    a = copy.deepcopy(a1)
+    entero = int(''.join([str(i) for i in a]))
+    return entero
+
+
+def tuple_to_int_list(a1):
+    a = copy.deepcopy(a1)
+    a[0].pop(0)
+    return a[0]
+
+def list_to_tuple(a1,enteros,signo):
+    a = copy.deepcopy(a1)
+    part_e = a[0:enteros]
+    part_d = a[enteros:len(a)]
+    return (signo + part_e, part_d)
 
 
 def pi():
-    suma =([0], 30*[0])
-    while()
+    pi_0 = ([],[])
+    pi_i = (['+',0],[0])
+    k = 0
+    while(comparacion(pi_0,pi_i) == False and k<20000):
+    #while(k<20000):
+        pi_0 = copy.deepcopy(pi_i)
+        if((k%2)==0):
+            pi_ki = int_to_tuple((2*k)+1)
+        else:
+             pi_ki = int_to_tuple(-(2*k)-1)
+        pi_kt = division((['+',1],[0]),pi_ki,30)
+        pi_i = suma(pi_0,pi_kt)
+        k += 1        
+    print("k = ",k)
+    pi_f = multiplicacion((['+',4],[0]),pi_i)
+    return pi_f
 
 
 if __name__ == "__main__":
     print(imprimir(pi()))
+    """
+    a = (['+',1,2,3],[4,5,6])
+    b = (['-',0,0,0],[0])
+    c = (['+',1,0,0],[0,0])
+    d = multiplicacion(a,b)
+    e = multiplicacion(b,a)
+    f = division(c,a)
+    g = division(a,c)
+    print(imprimir(a))
+    print(imprimir(b))
+    print(imprimir(c))
+    print(imprimir(d))
+    print(imprimir(e))
+    print(imprimir(f))
+    print(imprimir(g))
+    """
