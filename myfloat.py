@@ -15,9 +15,7 @@ class MyFloat:
             tuple_int = fc.int_to_tuple(other)            
             return fc.suma(self.tpl,tuple_int)
         elif isinstance(other,float):
-            #print(other)
             tuple_other = fc.float_to_tuple(other)
-            #print("1 = ",tuple_other)
             return fc.suma(self.tpl,tuple_other)
         else:
             return NotImplemented
